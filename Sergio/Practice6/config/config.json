@@ -1,0 +1,10 @@
+{
+	"proxy": "http://172.31.90.146:3128",
+	"account": "sergio.landa@fundacion-jala.org",
+	"password": "P@ssw0rd",
+	"logger": {
+		"appenders":[
+			{"type":"file", "filename":"aut-todoly.log", "category":"project"}
+			]
+	}
+}
