@@ -1,0 +1,18 @@
+{
+  "account": "gualy_vc@hotmail.com",
+  "password": "password123",
+
+  "service": "https://todo.ly/api/",
+  "type": ".json",
+  "projects": "projects",
+  "items": "items",
+
+  "proxy": "http://172.31.90.146:3128",
+
+  "logger": {
+              "appenders": [
+                             { "type": "file", "filename": "todoly-auto.log", "category": "project"},
+                             { "type": "file", "filename": "todoly-auto.log", "category": "item"}
+                           ]
+            }
+}
