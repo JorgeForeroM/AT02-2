@@ -1,0 +1,16 @@
+{
+  "logger" : {
+    "appenders" : [
+      {
+        "type": "file",
+        "filename": "todoly-auto.log",
+        "category": "project"
+      },
+      {
+        "type": "file",
+        "filename": "todoly-auto.log",
+        "category": "item"
+      }
+    ]
+  }
+}
