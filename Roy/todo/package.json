@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha --recursive",
     "smoke": "mocha test/smoke --recursive",
-    "acceptance": "mocha test/acceptance --recursive"
+    "acceptance": "mocha test/acceptance --recursive",
+    "bdd": "mocha test/bdd --recursive"
   },
   "author": "",
   "license": "ISC",

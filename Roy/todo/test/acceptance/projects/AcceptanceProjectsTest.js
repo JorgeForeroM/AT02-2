@@ -1,4 +1,7 @@
 var expect = require('chai').expect;
+var project = require('../../../lib/project.lib.js');
+var tokenGenerator = require('../../../lib/helpers/TokenGenerator');
+
 var request = require('superagent');
 require('superagent-proxy')(request);
 var moment = require('moment');
@@ -12,118 +15,44 @@ describe('Acceptance Projects', function () {
         Content: 'Project Test',
         Icon: 4
     };
-    var auxId;
 
-    beforeEach(function (done) {
-        request.post('https://todo.ly/api/projects.json')
-            .proxy('http://172.31.90.146:3128')
-            .auth('Roy.Rodriguez@fundacion-jala.org', 'Sabbath27')
-            .send(projectJson)
-            .end(function (err, res) {
-                auxId = res.body.Id;
-                done()
-            })
 
+    before(function (done) {
+        tokenGenerator.generateToken(function (err, tokenValue) {
+            tokenBody.TokenString = tokenValue;
+            done()
+        })
     });
+
 
     afterEach(function (done) {
-        request.del('https://todo.ly/api/projects/' + auxId + '.json')
-            .proxy('http://172.31.90.146:3128')
-            .auth('Roy.Rodriguez@fundacion-jala.org', 'Sabbath27')
-            .end(function (err, res) {
-                expect(res.status).to.equal(expectedStatus);
-                done();
-            })
-    });
-
-    it('POST /projects.json creates a project', function (done) {
-        var projectJson = {
-            Content: 'Project Test',
-            Icon: 4
-        };
-        request
-            .post('https://todo.ly/api/projects.json')
-            .proxy('http://172.31.90.146:3128')
-            .auth('Roy.Rodriguez@fundacion-jala.org', 'Sabbath27')
-            .send(projectJson)
-            .end(function (err, res) {
-                var projectCreated = res.body;
-                expect(moment().isSame(moment(res.body.LastSyncedDateTime), 'day')).to.be.true;
-                expect(res.status).to.equal(expectedStatus);
-                expect(projectCreated.Content).to.equal(projectJson.Content);
-                expect(projectCreated.Icon).to.equal(projectJson.Icon);
-                /*More Assertions*/
-                expect(projectCreated.Id).to.not.be.null;
-                expect(projectCreated.ParentId).to.be.null;
-                expect(projectCreated.ItemsCount).to.equal(0);
-                expect(projectCreated.Children).to.be.empty;
-                expect(projectCreated.Deleted).to.be.false;
-
-                request.del('https://todo.ly/api/projects/' + res.body.Id + '.json')
-                    .proxy('http://172.31.90.146:3128')
-                    .auth('Roy.Rodriguez@fundacion-jala.org', 'Sabbath27')
-                    .end(function (err, res) {
-                        expect(res.status).to.equal(expectedStatus);
-                        done();
-                    });
-            });
-    });
-
-    it('PUT /projects/id.json creates a project', function (done) {
-        /*Requirements*/
-        var newProjectJson = {
-            Content: 'Project Put',
-            Icon: 3
-        };
-        request.put('https://todo.ly/api/projects/' + auxId + '.json')
-            .proxy('http://172.31.90.146:3128')
-            .auth('Roy.Rodriguez@fundacion-jala.org', 'Sabbath27')
-            .send(newProjectJson)
-            .end(function (err, res) {
-                expect(res.status).to.equal(expectedStatus);
-                expect(res.body.Icon).to.equal(newProjectJson.Icon);
-                expect(moment().isSame(moment(res.body.LastUpdateDate), 'day')).to.be.true;
-                done();
-            });
-
-    });
-
-    it('DELETE /projects/id.json creates a project', function (done) {
-        /*Requirements*/
-        var idAuxProject = 0;
-        var projectJson = {
-            Content: 'Project Delete',
-            Icon: 4
-        };
-        request.post('https://todo.ly/api/projects.json')
-            .proxy('http://172.31.90.146:3128')
-            .auth('Roy.Rodriguez@fundacion-jala.org', 'Sabbath27')
-            .send(projectJson)
-            .end(function (err, res) {
-                idAuxProject = res.body.Id;
-                /*Delete*/
-                request.del('https://todo.ly/api/projects/' + idAuxProject + '.json')
-                    .proxy('http://172.31.90.146:3128')
-                    .auth('Roy.Rodriguez@fundacion-jala.org', 'Sabbath27')
-                    .end(function (err, res) {
-                        expect(res.body.Deleted).to.be.true;
-                        expect(res.status).to.equal(expectedStatus);
-                        done();
-                    })
-            });
-    });
-
-
-    it('GET /projects/id.json creates a project', function (done) {
-       request.get('https://todo.ly/api/projects/' + auxId + '.json')
-            .proxy('http://172.31.90.146:3128')
-            .auth('Roy.Rodriguez@fundacion-jala.org', 'Sabbath27')
-            .end(function (err, res) {
-                expect(res.status).to.equal(expectedStatus);
-                expect(res.body.Icon).to.equal(projectJson.Icon);
-                expect(moment().isSame(moment(res.body.LastSyncedDateTime), 'day')).to.be.true;
+        if (projectJson.Id) {
+            project.del(projectJson.Id, function (err, res) {
                 done()
-            });
+            })
+        }
+        else {
+            done();
+        }
+    });
 
+    context('PUT, DELETE AND GET TESTS', function () {
+        beforeEach(function (done) {
+            project.create(projectJson, function (err, res) {
+                projectJson.Id = res.body.Id;
+                done();
+            });
+        });
+
+        it.only('Put /projects/[id].json returns 200', function (done) {
+            var projectUpdate = {
+                Icon: 8
+            };
+
+            project.update(projectJson.Id, projectUpdate, function (err, res) {
+                expect(res.status).to.equal(expectedStatus);
+                done();
+            });
+        });
     });
 });
