@@ -1,0 +1,21 @@
+{
+  "account" : "jorge.forero@fundacion-jala.org",
+  "password" : "jb&11235",
+
+  "service" : "https://todo.ly/api/",
+  "type" : ".json",
+  "projects" : "projects",
+  "items" : "items",
+  "doneitems": "doneitems",
+  "filters": "filters",
+  "inbox":"/0/",
+
+  "proxy" : "http://172.31.90.146:3128",
+
+  "logger" : {
+    "appenders" : [
+      {"type" : "file", "filename": "todoly-auto.log", "category" : "project"},
+      {"type" : "file", "filename": "todoly-auto.log", "category" : "item"}
+    ]
+  }
+}
