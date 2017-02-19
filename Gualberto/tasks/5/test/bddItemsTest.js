@@ -102,8 +102,6 @@ describe('Given an Item in the Inbox filter',function () {
         });
 
         it('Then the item is present in the Inbox list as done',function () {
-            /*Get the Inbox list, verify the item is present*/
-
             /*Assertions*/
             expect(itemCreated.Checked).to.be.true;
             /*Assertions*/
