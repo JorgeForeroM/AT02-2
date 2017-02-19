@@ -1,3 +1,20 @@
+/*
+ Story: Restore Deleted Items
+ Scenario: Restore Deleted Items from Recycle to Inbox
+ As employee
+ I want to restore deleted items
+ So, that I can continue working on them
+
+ Given an item in the inbox filter
+ And it is marked as done
+ And it is deleted
+ When the item is restored from the Recycle Bin to Inbox
+ The item is present in the Inbox list as done
+ When  the item is unmarked as done
+ The the item is no longer part of the done list
+ And the item on active state
+ * */
+
 var expect = require('chai').expect;
 var item = require('../lib/item.js');
 
@@ -24,7 +41,7 @@ describe('Given an Item in the Inbox filter',function () {
             });
     });
 
-    after(function () {
+    after(function (done) {
         /*delete the item*/
         item
             .deleteItem(itemId,function (err,res) {
@@ -47,6 +64,7 @@ describe('Given an Item in the Inbox filter',function () {
 
                 /*Assertions*/
                 expect(res.status).to.equal(expectedStatus);
+                expect(res.body.Checked).to.be.true;
                 /*Assertions*/
                 done();
             });
@@ -60,6 +78,7 @@ describe('Given an Item in the Inbox filter',function () {
 
                 /*Assertions*/
                 expect(res.status).to.equal(expectedStatus);
+                expect(res.body.Deleted).to.be.true;
                 /*Assertions*/
                 done();
             });
@@ -67,17 +86,25 @@ describe('Given an Item in the Inbox filter',function () {
 
     describe('When the item is restored from the Recycle Bin to inbox',function () {
         before(function (done) {
-            /*Code to restore from Recycle Bin*/
+            /*Code to restore from RecycleBin*/
 
             var restoreItem = { Deleted: false };
 
             item
                 .updateItem(itemId,restoreItem,function (err,res) {
+                    itemCreated = res.body;
                     /*Assertions*/
                     expect(res.status).to.equal(expectedStatus);
+                    expect(res.body.Deleted).to.be.false;
                     /*Assertions*/
                     done();
                 });
+        });
+
+        it('Then the item is present in the Inbox list as done',function () {
+            /*Assertions*/
+            expect(itemCreated.Checked).to.be.true;
+            /*Assertions*/
         });
 
     });
@@ -90,9 +117,10 @@ describe('Given an Item in the Inbox filter',function () {
 
             item
                 .updateItem(itemId,checkedItem,function (err,res) {
-
+                    itemCreated = res.body;
                     /*Assertions*/
                     expect(res.status).to.equal(expectedStatus);
+                    expect(res.body.Checked).to.be.false;
                     /*Assertions*/
                     done();
                 });

@@ -72,7 +72,7 @@ function getItemFromFilter(callback) {
         .send()
 
         .end(function (err,res) {
-
+            console.log(res.body);
             callback(err,res);
         });
 }
