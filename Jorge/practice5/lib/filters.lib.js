@@ -4,6 +4,7 @@
 var request = require('superagent');
 require('superagent-proxy')(request);
 var config = require('../config.json');
+var header = require('./header');
 
 var account = config.account;
 var password = config.password;
@@ -15,7 +16,7 @@ function emptyRecycleBin(callback) {
     request
         .del(endpoint)
         .proxy(config.proxy)
-        .auth(account, password)
+        .set(header)
         .end(function (err, res) {
             callback(err, res);
         });
@@ -25,7 +26,7 @@ function getDoneFilters(callback) {
     var endpoint = service + config.filters + config.inbox + config.doneitems + config.type;
     request
         .get(endpoint)
-        .proxy(config.proxy)
+        .set(header)
         .auth(account, password)
         .end(function (err, res) {
             callback(err, res);
@@ -38,7 +39,7 @@ function getItems(callback) {
     request
         .get(endpoint)
         .proxy(config.proxy)
-        .auth(account, password)
+        .set(header)
         .end(function (err, res) {
             callback(err, res);
         });
@@ -49,7 +50,7 @@ function getFilters(callback) {
     request
         .get(endpoint)
         .proxy(config.proxy)
-        .auth(account, password)
+        .set(header)
         .end(function (err, res) {
             callback(err, res);
         });

@@ -9,6 +9,7 @@
   "doneitems": "doneitems",
   "filters": "filters",
   "inbox":"/0/",
+  "token":"authentication/token",
 
   "proxy" : "http://172.31.90.146:3128",
 

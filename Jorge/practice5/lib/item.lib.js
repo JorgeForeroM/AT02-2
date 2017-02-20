@@ -4,6 +4,7 @@
 var request = require('superagent');
 require('superagent-proxy')(request);
 var config = require('../config.json');
+var header = require('./header');
 
 var account = config.account;
 var password = config.password;
@@ -16,7 +17,7 @@ function create(itemJson, callback) {
     request
         .post(endpoint)
         .proxy(config.proxy)
-        .auth(account, password)
+        .set(header)
         .send(itemJson)
         .end(function (err, res) {
 
@@ -30,7 +31,7 @@ function del(itemId, callback) {
     request
         .del(endpoint)
         .proxy(config.proxy)
-        .auth(account, password)
+        .set(header)
         .end(function (err, res) {
             callback(err, res);
         });
@@ -42,7 +43,7 @@ function update(itemId, itemJson, callback) {
     request
         .put(endpoint)
         .proxy(config.proxy)
-        .auth(account, password)
+        .set(header)
         .send(itemJson)
         .end(function (err, res) {
             callback(err, res);
@@ -55,7 +56,7 @@ function getById(itemId, callback) {
     request
         .get(endpoint)
         .proxy(config.proxy)
-        .auth(account, password)
+        .set(header)
         .end(function (err, res) {
             callback(err, res);
         });
@@ -67,18 +68,7 @@ function getAll(callback) {
     request
         .get(endpoint)
         .proxy(config.proxy)
-        .auth(account, password)
-        .end(function (err, res) {
-            callback(err, res);
-        });
-}
-
-function emptyRecycleBin(callback) {
-    var endpoint = service + config.filters + '/-4' + config.items + config.type;
-    request
-        .del('http://todo.ly/api/filters/-4/items.json')
-        .proxy(config.proxy)
-        .auth(account, password)
+        .set(header)
         .end(function (err, res) {
             callback(err, res);
         });

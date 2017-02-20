@@ -18,6 +18,7 @@
 var expect = require('chai').expect;
 var item = require('../lib/item.lib');
 var filters = require('../lib/filters.lib');
+var tokenLib = require('../lib/Token.lib');
 
 describe('Given an item in the inbox filter', function () {
     this.timeout(9000);
@@ -28,11 +29,15 @@ describe('Given an item in the inbox filter', function () {
     };
 
     before(function (done) {
-        item
-            .create(itemJson, function (err, res) {
-                itemJson.Id = res.body.Id;
-                done();
+        tokenLib
+            .getToken(function (err, res) {
+                item
+                    .create(itemJson, function (err, res) {
+                        itemJson.Id = res.body.Id;
+                        done();
+                    })
             })
+
     });
 
     after(function (done) {

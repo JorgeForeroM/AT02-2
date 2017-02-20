@@ -4,7 +4,8 @@
 var request = require('superagent');
 require('superagent-proxy')(request);
 var config = require('../config.json');
-
+var logger = require('../logger/logger').getLogger('project');
+var header = require('./header');
 
 var account = config.account;
 var password = config.password;
@@ -16,9 +17,16 @@ function create(projectJson, callback) {
     request
         .post(endpoint)
         .proxy(config.proxy)
-        .auth(account, password)
+        .set(header)
         .send(projectJson)
         .end(function (err, res) {
+
+            logger.debug('POST /projects.json');
+            if (err != null) {
+                logger.error(err.status);
+                logger.error(err.response);
+            }
+
             callback(err, res);
         });
 };
@@ -29,7 +37,7 @@ function del(projectId, callback) {
     request
         .del(endpoint)
         .proxy(config.proxy)
-        .auth(account, password)
+        .set(header)
         .end(function (err, res) {
             callback(err, res);
         });
@@ -41,7 +49,7 @@ function update(projectId, projectJson, callback) {
     request
         .put(endpoint)
         .proxy(config.proxy)
-        .auth(account, password)
+        .set(header)
         .send(projectJson)
         .end(function (err, res) {
             callback(err, res);
@@ -54,7 +62,7 @@ function get(projectId, callback) {
     request
         .get(endpoint)
         .proxy(config.proxy)
-        .auth(account, password)
+        .set(header)
         .end(function (err, res) {
             callback(err, res);
         });
